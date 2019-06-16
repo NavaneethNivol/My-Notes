@@ -1,0 +1,59 @@
+Basics of Programming language (JS , PYTHON , RUBY)
+
+-- variables
+
+-- conditionals
+
+-- loops
+
+-- functions
+
+-- objects / classes
+
+
+---------------------------------------------
+
+Basics of RDBMS (mySql, Postgres)
+
+ER DIAGRAMS
+CLASS DIAGRAMS
+DATABASE NORMALIZATION
+DATA FLOW
+AUTHENTICATION FLOW
+SQL AND NO-SQL DATABASES
+
+-- DATATYPES
+
+-- QUERIES
+
+- CREATE
+- SELECT
+- UPDATE
+- DELETE/DROP
+- ALTER 
+- INSERT
+- JOIN
+
+-- CLAUSES
+
+- GROUPBY
+- HAVING
+- ORDERBY
+
+
+---------------------------------------------
+
+
+BASIC OF APIS
+
+- REST API
+- SOAP API
+- JWT
+- COMMUNICATIONS WITH SERVER
+- ASYNC AND SYNC REQUESTS
+- CALLBACKS AND PROMISES
+
+FRAMEWORKS
+
+- node + express 
+- django 

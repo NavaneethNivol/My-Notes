@@ -1,0 +1,40 @@
+NODE JS
+
+COMMENTS:
+
+// Single line comment
+
+/* Multiple 
+    line
+     comments */
+
+VARIABES:
+
+var 
+
+PRINTING:
+
+console.log("TEXT or Variable");
+
+FUNCTIONS:
+
+function <function_name>( optional parameters) {
+
+}
+
+
+
+Display a module property of an file on console:
+
+    console.log(module);
+
+Exporting an Module:
+
+    module.export.
+
+
+LOADING MODULES:
+
+const obj = require('Module_name');
+
+

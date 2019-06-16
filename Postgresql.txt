@@ -1,0 +1,245 @@
+POSTGRESQL
+
+COMMENTS:
+
+-- this is a comment
+
+/* this is also an comment*/
+
+
+SELECT order_detail_id, quantity
+/*
+ * Author: TechOnTheNet.com
+ * Purpose: To show a comment that spans multiple lines in your SQL
+ * statement in PostgreSQL.
+ */
+FROM order_details;
+
+
+\?          ==>  List of all commands
+
+\dt         ==>  SHOW ALL TABLES IN A DATABASE 
+
+\l          ==>  SHOW ALL DATABASES
+
+\conninfo   ==> Display information about current connection
+
+\c [DBNAME] ==> Connect to an database
+
+\q          ==>  Quit
+
+
+DATA TYPES:
+
+Boolean (or) bool
+
+CHAR
+
+VARCHAR
+
+TEXT
+
+SMALLINT  - -32,768 to 32,767.
+
+INT       - -2,147,483,648 to 2,147,483,647
+
+SERIAL    -  AUTO_INCREMENT Field 
+
+float 
+
+DATE       - date 
+
+TIME       - time 
+
+TIMESTAMP  - date & time
+
+UUID
+
+Array
+
+JSON
+
+
+SPECIAL DATATYPES:
+
+box
+line
+point
+lseg
+polygon
+inet
+macaddr
+
+
+DATABASES BASICS:
+
+CREATE DATABASE <Database_name>;
+
+DELETE DATABASE:
+DROP DATABASE [IF EXISTS] <Database_name>;  ==> [IF EXISTS] {optional}
+DROP DATABASE <Database_name>;
+
+RENAME:
+ALTER DATABASE <target_database> action;
+ALTER DATABASE <target_database> RENAME TO <new_database>;
+
+CHANGE OWNER:
+ALTER DATABASE <target_database> OWNER TO <new_onwer>;
+
+CHANGE TABLESPACE || SET TABLESPACE:
+ALTER DATABASE <target_database> SET TABLESPACE <new_tablespace>;
+
+Change session defaults for run-time configuration variables:
+ALTER DATABASE <target_database> SET configuration_parameter = value;
+
+
+CREATE NEW OWNER:
+CREATE ROLE bigboss SUPERUSER;
+CREATE ROLE <owner_name> VALID UNTIL 'infinity';
+CREATE ROLE doe WITH PASSWORD 'pgSecpas1970' VALID UNTIL '2020-01-01';
+
+DISPLAY ALL ROLES:
+SELECT rolname FROM pg_roles;
+
+DELETE A ROLE:
+DROP ROLE <role_name>;
+
+
+RESET ROLE;  // To Reset Privilages
+ 
+	
+
+Restore database:
+    pg_restore -U postgres -d <Database_name> <C:\dvdrental\dvdrental.tar // File location>;
+
+
+
+TABLE BASICS:
+
+CREATION:
+
+CREATE TABLE <Table_name>(
+    // Parameters or (items)
+);
+
+CREATE TABLE <Table_name> (
+   id serial NOT NULL PRIMARY KEY,
+   name VARCHAR(25),
+   msg_field VARCHAR(100)
+);
+
+INSERT  VALUES:
+
+INSERT INTO <Tabl_name> (name, msg_field) VALUES
+   ('nivol', 'hello'),
+   ('ani', 'world'),
+   ('surya', lol);
+
+
+REMOVE or DELETE Rows from TABLE:
+
+DELETE FROM table WHERE condition;
+DELETE FROM link WHERE id = 8;
+
+UPDATE THE VALUES IN TABLE:
+
+UPDATE table SET column1 = value1,column2 = value2 ,... WHERE condition;
+UPDATE COMPANY SET SALARY = 15000 WHERE ID = 3;
+
+
+BASIC SELECTION:
+
+SELECT <coloumns> FROM <Table_name>;
+    :     *                             for all coloumns
+
+
+CONCATENATION :
+
+SELECT first_name || ' ' || last_name AS full_name, email FROM customer;    [  ||  ==>  Concatenation Operator  ]
+
+
+DELETE TABLE:
+
+DROP TABLE author;
+DROP TABLE IF EXISTS author;     // To avoid the error if the table is not present
+DROP TABLE author CASCADE;       // To Remove all the dependent objects first before removing the table
+
+
+
+ALTER TABLE:
+
+ALTER TABLE table_name action;
+
+ALTER TABLE table_name ADD COLUMN new_column_name TYPE;     // ADD A New Column to the table 
+
+ALTER TABLE table_name DROP COLUMN column_name;             // Drop or Delete a Colomn from a table
+
+
+// Renaming table and column
+
+ALTER TABLE table_name RENAME TO new_table_name;	
+ALTER TABLE table_name RENAME COLUMN column_name TO new_column_name;
+
+
+CHANGE THE DATA _TYPE OF A COLUMN IN TABLE:
+
+ALTER TABLE <table_name> ALTER COLUMN <column_name> TYPE <new_data_type>;
+ALTER TABLE assets ALTER COLUMN <column_name> TYPE VARCHAR;
+
+
+ORDER BY:
+
+SELECT first_name,last_name FROM customer ORDER BY last_name DESC;
+SELECT <column_1,column_2> FROM <Table_name> ORDER BY column_1 ASC , column_2 DESC;
+        :       *                                                                       //For all coloumns
+        : ASC  ==> Ascending Order (DEFAULT)
+        : DESC ==> Descending Order
+
+
+DISTINCT:
+
+SELECT  DISTINCT <Coloumns> FROM <table_name>;
+SELECT DISTINCT column_1, column_2 FROM table_name;
+         :           *                                  // For all coloumns
+
+SELECT DISTINCT <coloumns> FROM <table_name> ORDER BY <coloumn>;
+
+
+WHERE:
+
+SELECT <coloumns> FROM <table_name> WHERE <conditions>;
+
+SELECT last_name,first_name FROM customer WHERE first_name = 'Jamie';
+ 
+SELECT last_name,first_name FROM customer WHERE first_name = 'Jamie' AND last_name = 'Rice';
+
+SELECT customer_id,amount,payment_date FROM payment WHERE amount <= 1 OR amount >= 8;
+
+
+LIMIT:
+
+SELECT * FROM <table_name> LIMIT <n>;
+
+SELECT * FROM <TABLE_NAME> LIMIT <n> OFFSET <m>;
+
+SELECT film_id,title,release_year FROM film ORDER BY film_id LIMIT 5;
+
+SELECT film_id,title,release_year FROM film ORDER BY film_id LIMIT 4 OFFSET 3;
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////
+
+
+FETCH
+
+ADD CHECK
+
+USING (in Delete command for tables)

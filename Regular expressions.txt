@@ -1,0 +1,178 @@
+REGULAR EXPRESSIONS
+
+COMMENT:
+
+?#
+
+Example : \bA(?#This is an inline comment)\w+\b
+
+IDENTIFIERS:
+
+\d      Any Digit or an number
+\D      Anything Except an number
+
+\s      Space
+\S      Anything Except a Space
+
+\w      Any Character
+\W      Anything Except an Character
+
+.       Anything expect for a newline
+
+\b      Backspace around a word
+
+\.      Period
+
+MODIFIERS:
+
+{X}     Expecting "X" Amount
+            eg: {1,3}  --   Excpecting the range from 1-3
+
++       Match 1 or more
+?       Match 0 or 1
+*       Match 0 or more
+
+$       Match the Ending of a String
+^       Match the Starting of a String
+
+|       Either or
+[]      Range of Variance
+            eg: [a-d] : checks for an char between a-d it considers only one char
+                [^a-d]: checks for an char except for a,b,c,d and it also considers only one char
+()      Group
+
+//Doubts
+
+(?<name>:x) : Named capturing group
+(?:x) :       Non-capturing group
+
+
+White Spaces Characters:
+
+\n      Newline
+\s      String
+\t      Tab
+\v      Vertical Tab
+\e      Escape
+\f      Form Feed
+\r      Return
+\0      NUL character
+
+Search:
+
+/<Expression>/<Flag>
+
+Flags:
+
+g       Global Search
+
+i       Case-insensitive Search
+
+m       Multi-line Search
+
+s       Allow . to match newline characters
+
+u       "unicode"; treat a pattern as a sequence of unicode code points
+
+y       Perform a "sticky" search that matches starting at the current position in the target string
+
+
+
+
+
+Usage:
+
+
+
+JS (JavaScript):
+
+var re = /pattern/flags;
+
+        or
+
+var re = new RegExp('pattern', 'flags');
+
+
+METHOD            DESCRIPTION
+
+exec	    A RegExp method that executes a search for a match in a string. It returns an array of information or null on a mismatch.
+test	    A RegExp method that tests for a match in a string. It returns true or false.
+match	    A String method that executes a search for a match in a string. It returns an array of information or null on a mismatch.
+matchAll	A String method that returns an iterator containing all of the matches, including capturing groups.
+search	    A String method that tests for a match in a string. It returns the index of the match, or -1 if the search fails.
+replace	    A String method that executes a search for a match in a string, and replaces the matched substring with a replacement substring.
+split	    A String method that uses a regular expression or a fixed string to break a string into an array of substrings.
+
+
+
+Example:
+
+var re = /\w+\s/g;
+var str = 'fee fi fo fum';
+var myArray = str.match(re);
+console.log(myArray);
+
+// ["fee ", "fi ", "fo "]
+
+
+PYTHON:
+
+FLAGS FOR PYTHON:
+
+ASCII          A	        Makes several escapes like \w, \b, \s and \d match only on ASCII characters with the respective property.
+DOTALL         S	        Make . match any character, including newlines.
+IGNORECASE     I	        Do case-insensitive matches.
+LOCALE         L	        Do a locale-aware match.
+MULTILINE      M	        Multi-line matching, affecting ^ and $.
+VERBOSE        X          (for ‘extended’)	Enable verbose REs, which can be organized more cleanly and understandably.
+
+USAGE: re.ASCII (or) re.A  ,  re.IGNORECASE (or) re.I
+
+import re
+
+p = re.match(r'<expression>',"<string>",flags)
+
+print(p)
+
+
+
+
+METHOD                  DESCRIPTION
+
+match()	        Determine if the RE matches at the beginning of the string.
+search()	    Scan through a string, looking for any location where this RE matches.
+findall()	    Find all substrings where the RE matches, and returns them as a list.
+finditer()	    Find all substrings where the RE matches, and returns them as an iterator.
+
+group()	        Return the string matched by the RE
+start()     	Return the starting position of the match
+end()       	Return the ending position of the match
+span()          Return a tuple containing the (start, end) positions of the match
+
+
+Example:
+
+  ## i+ = one or more i's, as many as possible.
+  match = re.search(r'pi+', 'piiig') # found, match.group() == "piii"
+
+  ## Finds the first/leftmost solution, and within it drives the +
+  ## as far as possible (aka 'leftmost and largest').
+  ## In this example, note that it does not get to the second set of i's.
+  match = re.search(r'i+', 'piigiiii') # found, match.group() == "ii"
+
+  ## \s* = zero or more whitespace chars
+  ## Here look for 3 digits, possibly separated by whitespace.
+  match = re.search(r'\d\s*\d\s*\d', 'xx1 2   3xx') # found, match.group() == "1 2   3"
+  match = re.search(r'\d\s*\d\s*\d', 'xx12  3xx') # found, match.group() == "12  3"
+  match = re.search(r'\d\s*\d\s*\d', 'xx123xx') # found, match.group() == "123"
+
+  ## ^ = matches the start of string, so this fails:
+  match = re.search(r'^b\w+', 'foobar') # not found, match == None
+  ## but without the ^ it succeeds:
+  match = re.search(r'b\w+', 'foobar') # found, match.group() == "bar"
+
+  # Feed the file text into findall(); it returns a list of all the found strings
+
+  f= open("file.txt","r")
+
+  strings = re.findall(r'some pattern', f.read())

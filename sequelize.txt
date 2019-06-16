@@ -1,0 +1,508 @@
+SEQUELIZE DOCS
+
+// Installing sequelize along with drivers(required)
+
+npm install --save sequelize
+
+# One of the following:
+
+$ npm install --save pg pg-hstore # Postgres
+$ npm install --save mysql2
+$ npm install --save mariadb
+$ npm install --save sqlite3
+$ npm install --save tedious # Microsoft SQL Server
+
+
+==========================================
+
+// Setting up a connection with database:
+
+==========================================
+
+const Sequelize = require('sequelize');
+
+Option 1: Passing parameters separately
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+});
+
+
+Option 2: Passing a connection URI
+
+const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
+
+
+
+// Testing the connection with the database
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
+
+// Modeling a table - using sequelize.define
+
+const User = sequelize.define('user', {
+  // attributes
+  firstName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: Sequelize.STRING
+    // allowNull defaults to true
+  }
+}, {
+  // options
+});
+
+
+The above process can also be done using sequelize.Model.init but sequelize.define internally calls the Model.init function only so its the same both ways.
+
+
+==========================================
+
+// Options:
+
+==========================================
+
+freezeTableName : true     -- In sequelize The table name is automatically pluralized by default so to avoid this change to happen we need to set this value to TRUE.
+
+timestamp : false          -- createdAt and updatedAt fields are automatically added into tables to avoid adding these fields to tables set this value to false by default it is TRUE.
+
+underscored: true          -- To enable underscored format in models.
+
+
+
+==========================================
+
+// SYNC the models to automatically generate tables 
+
+==========================================
+
+SYNC A SINGLE TABLE
+
+
+User.sync({ force: true }).then(() => {                                 // Note: using `force: true` will drop the table if it already exists
+  
+  return User.create({                                                  // Now the `users` table in the database corresponds to the model definition
+    firstName: 'John',
+    lastName: 'Hancock'
+  });
+});
+
+
+SYNC ALL TABLES AT ONCE
+
+
+sequelize.sync()                                                        // This will sync all the tables at once
+
+
+==========================================
+
+// Querying
+
+==========================================
+
+// Find all users
+User.findAll().then(users => {
+  console.log("All users:", JSON.stringify(users, null, 4));
+});
+
+
+// Create a new user
+User.create({ firstName: "Jane", lastName: "Doe" }).then(jane => {
+  console.log("Jane's auto-generated ID:", jane.id);
+});
+
+
+
+// Delete everyone named "Jane"
+User.destroy({
+  where: {
+    firstName: "Jane"
+  }
+}).then(() => {
+  console.log("Done");
+});
+
+
+
+// Change everyone without a last name to "Doe"
+User.update({ lastName: "Doe" }, {
+  where: {
+    lastName: null
+  }
+}).then(() => {
+  console.log("Done");
+});
+
+==========================================
+
+// Dialect  -- form or type of database
+
+==========================================
+
+For Postgres:
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  // gimme postgres, please!
+  dialect: 'postgres'
+})
+
+
+==========================================
+
+DATATYPES
+
+==========================================
+
+STRING
+TEXT
+INTEGER    -- UNSIGNED,ZEROFILL
+BIGINT
+FLOAT
+REAL
+DOUBLE
+DECIMAL
+DATE
+DATEONLY
+BOOLEAN
+ENUM
+ARRAY
+JSON
+JSONB
+
+UUID
+CIDR
+INET
+MACADDR
+
+
+=============================================================
+
+EXPANSION OF MODELS  ||    FUNCTION FOR DATABASE MODELS
+
+=============================================================
+
+
+class User extends Model {
+  getFullname() {
+    return [this.firstname, this.lastname].join(' ');
+  }
+}
+User.init({ firstname: Sequelize.STRING, lastname: Sequelize.STRING }, { sequelize });
+
+// Example:
+User.build({ firstname: 'foo', lastname: 'bar' }).getFullname() // 'foo bar'
+
+
+
+
+==========================================
+
+DATA RETRIVAL OR FINDER
+
+==========================================
+
+
+
+---------------------------- findByPk
+
+
+// search for known ids
+Project.findByPk(123).then(project => {
+
+})
+
+
+----------------------------  findOne
+
+// search for attributes
+Project.findOne({ where: {title: 'aProject'} }).then(project => {
+  // project will be the first entry of the Projects table with the title 'aProject' || null
+})
+
+Project.findOne({
+  where: {title: 'aProject'},
+  attributes: ['id', ['name', 'title']]
+}).then(project => {
+  // project will be the first entry of the Projects table with the title 'aProject' || null
+  // project.get('title') will contain the name of the project
+})
+
+
+----------------------------findOrCreate
+
+User
+  .findOrCreate({where: {username: 'sdepold'}, defaults: {job: 'Technical Lead JavaScript'}})
+  .then(([user, created]) => {
+    console.log(user.get({
+      plain: true
+    }))
+    console.log(created)
+
+---------------------------- findAndCountAll
+
+Project
+  .findAndCountAll({
+     where: {
+        title: {
+          [Op.like]: 'foo%'
+        }
+     },
+     offset: 10,
+     limit: 2
+  })
+  .then(result => {
+    console.log(result.count);
+    console.log(result.rows);
+  });
+
+
+User.findAndCountAll({
+  include: [
+     { model: Profile, where: { active: true }}
+  ],
+  limit: 3
+});
+
+
+---------------------------- findAll
+
+
+// find multiple entries
+Project.findAll().then(projects => {
+  // projects will be an array of all Project instances
+})
+
+// search for specific attributes - hash usage
+Project.findAll({ where: { name: 'A Project' } }).then(projects => {
+  // projects will be an array of Project instances with the specified name
+})
+
+// search within a specific range
+Project.findAll({ where: { id: [1,2,3] } }).then(projects => {
+  // projects will be an array of Projects having the id 1, 2 or 3
+  // this is actually doing an IN query
+})
+
+
+
+---------------------------- Using Filters sequelize.Op
+
+Project.findOne({
+  where: {
+    name: 'a project',
+    [Op.or]: [
+      { id: [1,2,3] },
+      { id: { [Op.gt]: 10 } }
+    ]
+  }
+})
+
+Project.findOne({
+  where: {
+    name: 'a project',
+    id: {
+      [Op.or]: [
+        [1,2,3],
+        { [Op.gt]: 10 }
+      ]
+    }
+  }
+})
+
+
+---------------------- others
+
+COUNT
+MAX 
+MIN
+SUM
+
+
+
+==========================================
+
+                  HOOKS
+
+==========================================
+
+(1)
+  beforeBulkCreate(instances, options)
+  beforeBulkDestroy(options)
+  beforeBulkUpdate(options)
+(2)
+  beforeValidate(instance, options)
+(-)
+  validate
+(3)
+  afterValidate(instance, options)
+  - or -
+  validationFailed(instance, options, error)
+(4)
+  beforeCreate(instance, options)
+  beforeDestroy(instance, options)
+  beforeUpdate(instance, options)
+  beforeSave(instance, options)
+  beforeUpsert(values, options)
+(-)
+  create
+  destroy
+  update
+(5)
+  afterCreate(instance, options)
+  afterDestroy(instance, options)
+  afterUpdate(instance, options)
+  afterSave(instance, options)
+  afterUpsert(created, options)
+(6)
+  afterBulkCreate(instances, options)
+  afterBulkDestroy(options)
+  afterBulkUpdate(options)
+
+
+------------------------ DECLARING HOOKS
+
+
+-----------------Method 1
+
+
+class User extends Model {}
+User.init({
+  username: DataTypes.STRING,
+  mood: {
+    type: DataTypes.ENUM,
+    values: ['happy', 'sad', 'neutral']
+  }
+}, {
+  hooks: {
+    beforeValidate: (user, options) => {
+      user.mood = 'happy';
+    },
+    afterValidate: (user, options) => {
+      user.username = 'Toni';
+    }
+  },
+  sequelize
+});
+
+
+-------------------- Method 2 via the .addHook() method
+
+
+User.addHook('beforeValidate', (user, options) => {
+  user.mood = 'happy';
+});
+
+User.addHook('afterValidate', 'someCustomName', (user, options) => {
+  return Promise.reject(new Error("I'm afraid I can't let you do that!"));
+});
+
+// Method 3 via the direct method
+User.beforeCreate((user, options) => {
+  return hashPassword(user.password).then(hashedPw => {
+    user.password = hashedPw;
+  });
+});
+
+User.afterValidate('myHookAfter', (user, options) => {
+  user.username = 'Toni';
+});
+
+
+
+---------------------- REMOVING HOOKS
+
+class Book extends Model {}
+Book.init({
+  title: DataTypes.STRING
+}, { sequelize });
+
+Book.addHook('afterCreate', 'notifyUsers', (book, options) => {
+  // ...
+});
+
+Book.removeHook('afterCreate', 'notifyUsers');
+
+
+--------------------- Global / Universal  HOOKS
+
+
+
+class User extends Model {}
+User.init({}, { sequelize });
+class Project extends Model {}
+Project.init({}, {
+    hooks: {
+        beforeCreate: () => {
+            // Do other stuff
+        }
+    },
+    sequelize
+});
+
+User.create() // Runs the global hook
+Project.create() // Runs its own hook (because the global hook is overwritten)
+
+--------------------- Permanent HOOKS
+
+sequelize.addHook('beforeCreate', () => {
+    // Do stuff
+});
+
+
+==========================================
+
+//  INSTANCES
+
+==========================================
+
+
+--------Temp / Non - Persistance instance  (Requires explicit save() to store data)
+
+
+const task = Task.build({
+  title: 'specify the project idea',
+  description: 'bla',
+  deadline: new Date()
+})
+
+example:
+
+Task
+  .build({ title: 'foo', description: 'bar', deadline: new Date() })
+  .save()
+  .then(anotherTask => {
+    // you can now access the currently saved task with the variable anotherTask... nice!
+  })
+  .catch(error => {
+    // Ooops, do some error-handling
+  })
+
+
+------- Persistance instances  ( save() function is called implicitly)
+
+Task.create({ title: 'foo', description: 'bar', deadline: new Date() }).then(task => {
+  // you can now access the newly created task via the variable task
+})
+
+other functions :
+
+update,
+destroy,
+create,
+bulkCreate
+
+
+
+
+
