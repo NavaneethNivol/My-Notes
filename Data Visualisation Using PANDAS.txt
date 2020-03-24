@@ -1,0 +1,145 @@
+Data Visualisation Using PANDAS
+
+// Installation
+
+pip install pandas
+
+// Import 
+
+
+import pandas as pd
+
+
+// Reading Data from CSV
+
+df = pd.read_csv("datasets/avocado.csv")
+
+
+// Types of pandas objects
+
+=========================
+ 1. |     DATA FRAMES   |
+=========================
+
+-> Basics
+
+df -> DataFrames (Rows and Columns Representation)
+
+--> // Init an empty DataFrame
+
+df = pf.DataFrame()
+--
+
+df.head() - - - - - - - - - - - - - // By default it prints the top 5 rows - but we can specify our required number inside head ex: df.head(10)
+
+df.tail() - - - - - - - - - - - - - // By default it prints the last 5 rows - but we can specify our required number inside tail ex: df.tail(10)
+
+df.["Average_prices"] - - - - - - - // To print a particular Column from the data frame
+
+df.["Average_prices"].head() - - - -// for concise output -- prints only the top 5 rows of that column
+
+?? Where clause in Data Frames ??
+
+albany_df = df[ df['region'] == "Albany" ]     // get the rows from the main DataFrame where the region is "Albany"
+albany_df.head()
+
+========================
+?? Indexing in Pandas ??
+========================
+
+albany_df.index  - - - - - - - - - - // This will output the index column in df ( default index will be numbers from 0 ... n)
+
+-- Setting up our own index from the list column in DataFrame --
+
+albany_df.set_index("Date") - - - - -// ** This will not change the data in albany_df but it gives the changes DataFrame as an output **
+                                    Now the output contains the DataFrame which is indexed by Date --> ** "Date" should be the exisiting column in the DataFrame.
+                            
+^^ ** Fix for the above problem ** ^^ ( 2 Options )
+ albany_df = albany_df.set_index("Date")       // reassigning it to the same variable.
+ albany_df.set_index("Date", inplace = True)   // inplace will modify the DataFrame without needing to reassigning it.
+
+===================
+?? Sorting Index ??
+===================
+
+albany_df.sort_index(inplace = True)
+
+====================
+?? Sorting Column ??
+====================
+
+df.sort_values =(by="Date", ascending=True, inplace=True)
+ 
+
+===============
+ ?? Graphing ??
+===============
+
+ albany_df.plot() - - - - - - - - - - - // Plots the whole data against the Index of the DataFrame
+
+ albany_df.plot("Average_prices") - - - // Plots only the Average_prices column against the Index of the DataFrame
+
+
+ ==========================================
+ ?? Convert Date String to Date Datatype ??
+ ==========================================
+
+ df['Date'] = pd.to_datetime(df["Date"])
+
+======================
+ ?? Rolling Average ??
+======================
+
+albany_df['AveragePrice].rolling(25).mean()
+
+// rolling(25)  --> 25 means to consider previous 25 points to calculate. It should be combined with some arthimatic opetaion like mean(), sum() etc:-
+
+
+======================
+?? Droping NaN Rows ??
+======================
+
+albany_df.dropna()   // drops rows with Nan is any column and also drops missing data rows
+
+========================
+?? Copying DataFrames ??
+========================
+
+albany_df = df.copy()
+
+// Copy with Where clause or Conditions
+
+albany_df = df.copy()[ df['Region'] == "Albany"]
+
+
+====================================================
+?? Displaying all the raw values inside DataFrame ??
+====================================================
+
+df.values  // Returns an Array or Arrays 
+
+--> //values of a particular column:
+
+df['region'].values
+
+--> // Get unique values of a column
+
+df['region'].unique()
+
+
+============================
+?? DataFrame empty or not ??
+============================
+
+df.empty
+
+usage:  if df.empty:
+            print("empty")
+
+========================
+?? Joining DataFrames ??
+========================
+
+--> // Joining of DataFrames required both the DataFrame to have an ^^** common Index **^^
+
+complete_df = complete_df.join(region_df["price"])
